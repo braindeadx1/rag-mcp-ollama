@@ -1,0 +1,15 @@
+[Unit]
+Description=RAG-MCP Ollama: REST-API
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/rag-pipeline
+EnvironmentFile=/opt/rag-pipeline/.env
+ExecStart=/opt/rag-pipeline/.venv/bin/uvicorn pipeline.api:app --host 0.0.0.0 --port 8001
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

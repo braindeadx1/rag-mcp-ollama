@@ -1,0 +1,7 @@
+[Unit]
+Description=RAG-MCP Ollama: Backup Qdrant data to NAS
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/rag-qdrant/backup.sh

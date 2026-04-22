@@ -1,0 +1,15 @@
+[Unit]
+Description=RAG-MCP Ollama: Inbox-Watcher
+After=network-online.target rag-api.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/rag-pipeline
+EnvironmentFile=/opt/rag-pipeline/.env
+ExecStart=/opt/rag-pipeline/.venv/bin/python -m pipeline.watcher
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
