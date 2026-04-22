@@ -118,7 +118,12 @@ DELETE /source?source=<name>
 
 ## WebFetch hook (Claude Code)
 
-Auto-index everything Claude fetches from the web by adding to `~/.claude/settings.json`:
+Auto-index everything Claude fetches from the web. Two flavours ship in `hooks/`:
+
+- `webfetch_post.sh` — bash + jq + curl (Linux / macOS / Git-Bash)
+- `webfetch_post.ps1` — PowerShell (Windows)
+
+### Linux / macOS
 
 ```json
 {
@@ -128,7 +133,8 @@ Auto-index everything Claude fetches from the web by adding to `~/.claude/settin
         "matcher": "WebFetch|WebSearch",
         "hooks": [
           { "type": "command",
-            "command": "RAG_API_URL=http://<ct-ip>:8001 RAG_API_KEY=<key> bash /path/to/hooks/webfetch_post.sh" }
+            "command": "bash /path/to/hooks/webfetch_post.sh",
+            "env": { "RAG_API_URL": "http://<ct-ip>:8001", "RAG_API_KEY": "<key>" } }
         ]
       }
     ]
@@ -136,7 +142,26 @@ Auto-index everything Claude fetches from the web by adding to `~/.claude/settin
 }
 ```
 
-The hook script skips responses smaller than 500 bytes (no spam from short answers).
+### Windows
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "WebFetch|WebSearch",
+        "hooks": [
+          { "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File C:/path/to/hooks/webfetch_post.ps1",
+            "env": { "RAG_API_URL": "http://<ct-ip>:8001", "RAG_API_KEY": "<key>" } }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Both hook scripts skip responses smaller than 500 bytes (no spam from short answers).
 
 ## Bulk import
 
